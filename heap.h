@@ -284,9 +284,9 @@ size_t Heap<T, PComparator>::size() const{
 
 template <typename T, typename PComparator>
 void Heap<T, PComparator>::printList(){
-  for (int i = 0; i < this->container.size(); ++i){
-    std::cout << this->container.at(i) << " "; 
-  }
+  // for (int i = 0; i < this->container.size(); ++i){
+  //   std::cout << this->container.at(i) << " "; 
+  // }
 }
 
 
