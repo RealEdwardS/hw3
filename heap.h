@@ -99,9 +99,9 @@ Heap<T, PComparator>::~Heap(){
 // A min heap is where a parent node is always smaller than child node
 
 // NOTE: Replace 2 with ary
-// Parent(i) = (i+1)/2
-// Left child(i) = 2i + 1
-// Right child(i) = 2i + 2
+// Parent(i) = (i+1)/(ary)
+// Left child(i) = (ary)i + 1
+// Right child(i) = (ary)i + 2
 
 template <typename T, typename PComparator>
 void Heap<T, PComparator>::push(const T& item){
@@ -196,15 +196,17 @@ void Heap<T,PComparator>::pop()
   trickleDown(this->container.at(0), 0);
 }
 
-// NOTE: Replace 2 with ary
-// Parent(i) = (i+1)/2
-// Left child(i) = 2i + 1
-// Right child(i) = 2i + 2
 
+// Parent(i) = (i+1)/(ary)
+// Left child(i) = (ary)i + 1
+// Right child(i) = (ary)i + 2
+
+// A ternary tree has a left, middle, and right child
+// An ary tree - every parent node can have an ary amount of children 
 template <typename T, typename PComparator>
 void Heap<T, PComparator>::trickleDown(const T& item, int index){
-
-  // If left child exists. NOTE: Right child cannot exist if left doesn't
+  #ifdef ORIGINAL-trickleDown
+  // If left child exists. NOTE: Right child cannot exist if left doesn't exist
   if ( ((index * this->ary) + 1) < this->container.size()){
     // IF LEFT CHILD EXISTS, compare it with left child
     T& currItem = this->container.at(index); 
@@ -234,6 +236,38 @@ void Heap<T, PComparator>::trickleDown(const T& item, int index){
       }
     }
   }
+  #endif
+
+  // #ifdef TEST12
+  // Loop through each child
+  for (int i = 1; i <= this->ary; ++i){
+    // If the ith child exists
+    if ( ((index * this->ary) + i) < this->container.size() ){
+      // If ith child exists, compare currItem with ith child
+      T& currItem = this->container.at(index);
+      T& currChild = this->container.at((index * this->ary) + i);
+
+      // If the comparison fails (opposite that of trickleUp comparison)
+      if (this->comparator(currItem, currChild) == false){
+        // Swap these 2 values
+        std::swap(currItem, currChild);
+
+        // Call trickle down on value of current node at the currChild's index
+        trickleDown(currChild, ((index * this->ary) + i)); 
+      }
+
+      // If comparison passes (currChild fails), continue to next child
+      else{
+        continue;
+      }
+
+    }
+
+    else if ( ((index * this->ary) + i) >= this->container.size() ){
+      break; 
+    }
+  }
+  // #endif
 
 }
 

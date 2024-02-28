@@ -90,8 +90,8 @@ int main(int argc, char* argv[])
     // Test out your linked list code
 
     // Testing llpivot:
-    // int pivot = 10; 
-    // std::cout << "Pivot: " << pivot << endl; 
+    int pivot = 10; 
+    std::cout << "Pivot: " << pivot << endl; 
 
     // Test 1 (Empty smaller & larger lists):
     #ifdef TEST1
@@ -100,7 +100,7 @@ int main(int argc, char* argv[])
     cout << "TEST 1 - Testing with smaller & larger being empty" << endl; 
     llpivot(head, smaller, larger, pivot);
 
-    cout << "Head list (Should be empty)" << endl; 
+    cout << "Hea9d list (Should be empty)" << endl; 
     print(head); 
     cout << endl; 
 

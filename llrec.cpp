@@ -6,91 +6,57 @@
 // Provide your implementation of llpivot below
 //*********************************************
 void llpivot(Node *&head, Node *&smaller, Node *&larger, int pivot){
+    smaller = nullptr;
+    larger = nullptr; 
+
     if (head == nullptr){
-        return;
+        return; 
     }
 
-    // If value is less than or equal to than pivot
+    newLlpivotHelper(head, smaller, larger, pivot);
+}
+
+// Literally just the same without assigning smaller and larger to nullptr
+void newLlpivotHelper(Node *& head, Node *&smaller, Node *&larger, int pivot){
+    if (head == nullptr){
+        return; 
+    }
+    
+    // If val is less than or equal to pivot
     if (head->val <= pivot){
-
         // If smaller is empty
-        if (smaller == nullptr){
-            // Assign head pointer of smaller to head node
-            smaller = head;
+        // Assign head pointer of smaller to head node
+        smaller = head;
 
-            // Shift head node to next val in the original list 
-            head = head->next;
+        // Shift head node to next val in the original list 
+        head = head->next;
 
-            // Set the new smaller node's next to nullptr to break off link
-            // from original list
-            smaller->next = nullptr; 
+        // Set the new smaller node's next to nullptr to break off link
+        // from original list
+        smaller->next = nullptr; 
 
-            // Call llpivot again 
-            llpivot(head, smaller, larger, pivot); 
-        }
-
-        // If smaller is not empty
-        else if (smaller != nullptr){
-            // Find last node
-            Node* lastNode = llpivotHelper(smaller); 
-
-            // Add head node to back of list 
-            lastNode->next = head;
-
-            // Shift head node to next val in the original list 
-            head = head->next; 
-
-            // "lastNode" is no longer the last node of the list, since we added one
-            // So we need to set the next value (that we just added) and set that next
-            // to nullptr to break off link from original list
-            lastNode->next->next = nullptr;
-
-            // Call llpivot again 
-            llpivot(head, smaller, larger, pivot); 
-        }
+        // Call function again, with smaller->next to not lose smaller head pointer 
+        newLlpivotHelper(head, smaller->next, larger, pivot); 
     }
 
-    // If value is greater than pivot
+    // If val is greater than pivot
     else if (head->val > pivot){
-        
-        // If larger is empty
-        if (larger == nullptr){
-            // Set larger head pointer to head node
-            larger = head;
+        // Set larger head pointer to head node
+        larger = head;
 
-            // Shift head node to next val in the original list 
-            head = head->next;
+        // Shift head node to next val in the original list 
+        head = head->next;
 
-            // Set the new larger node's next to nullptr to break off link
-            // from original list
-            larger->next = nullptr; 
+        // Set the new larger node's next to nullptr to break off link
+        // from original list
+        larger->next = nullptr; 
 
-            // Call llpivot again 
-            llpivot(head, smaller, larger, pivot); 
-        }
-
-        else if (larger != nullptr){
-            // Find last node
-            Node* lastNode = llpivotHelper(larger);
-
-            // Add head node to back of list  
-            lastNode->next = head;
-
-            // Shift head node to next val in the original list 
-            head = head->next; 
-            
-            
-            // "lastNode" is no longer the last node of the list, since we added one
-            // So we need to set the next value (that we just added) and set that next
-            // to nullptr to break off link from original list
-            lastNode->next->next = nullptr; 
-
-            // Call llpivot again 
-            llpivot(head, smaller, larger, pivot); 
-        }
+        // Call function again with larger->next to not lose larger head pointer
+        newLlpivotHelper(head, smaller, larger->next, pivot); 
     }
 }
 
+// Ignore:
 Node*& llpivotHelper(Node*& list){
     // If list is null (empty), return list
     if (list == nullptr){
@@ -160,4 +126,94 @@ Node*& llpivotHelper(Node*& list){
             llpivot(head->next, smaller, larger, pivot); 
         }
     }
+*/
+
+// Original
+/*
+
+    if (head == nullptr){
+        return;
+    }
+
+    // If value is less than or equal to than pivot
+    if (head->val <= pivot){
+
+        // If smaller is empty
+        if (smaller == nullptr){
+            // Assign head pointer of smaller to head node
+            smaller = head;
+
+            // Shift head node to next val in the original list 
+            head = head->next;
+
+            // Set the new smaller node's next to nullptr to break off link
+            // from original list
+            smaller->next = nullptr; 
+
+            // Call llpivot again 
+            llpivot(head, smaller, larger, pivot); 
+        }
+
+        // If smaller is not empty
+        else if (smaller != nullptr){
+            // Find last node
+            Node* lastNode = llpivotHelper(smaller); 
+            smaller = lastNode; 
+
+            // Add head node to back of list 
+            lastNode->next = head;
+
+            // Shift head node to next val in the original list 
+            head = head->next; 
+
+            // "lastNode" is no longer the last node of the list, since we added one
+            // So we need to set the next value (that we just added) and set that next
+            // to nullptr to break off link from original list
+            lastNode->next->next = nullptr;
+
+            // Call llpivot again 
+            llpivot(head, smaller, larger, pivot); 
+        }
+    }
+
+    // If value is greater than pivot
+    else if (head->val > pivot){
+        
+        // If larger is empty
+        if (larger == nullptr){
+            // Set larger head pointer to head node
+            larger = head;
+
+            // Shift head node to next val in the original list 
+            head = head->next;
+
+            // Set the new larger node's next to nullptr to break off link
+            // from original list
+            larger->next = nullptr; 
+
+            // Call llpivot again 
+            llpivot(head, smaller, larger, pivot); 
+        }
+
+        else if (larger != nullptr){
+            // Find last node
+            Node* lastNode = llpivotHelper(larger);
+
+            // Add head node to back of list  
+            lastNode->next = head;
+
+            // Shift head node to next val in the original list 
+            head = head->next; 
+            
+            
+            // "lastNode" is no longer the last node of the list, since we added one
+            // So we need to set the next value (that we just added) and set that next
+            // to nullptr to break off link from original list
+            lastNode->next->next = nullptr; 
+
+            // Call llpivot again 
+            llpivot(head, smaller, larger, pivot); 
+        }
+    }
+
 */

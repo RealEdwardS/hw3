@@ -54,10 +54,17 @@ struct Node
 void llpivot(Node *&head, Node *&smaller, Node *&larger, int pivot);
 
 /**
+ * IGNORE
  * Define a helper function for llpivot that finds the last node of smaller & larger 
  * Return that node and let node->next serve as a header. 
 */
 Node*& llpivotHelper(Node *&list);
+
+/**
+ * Serves same function as llpivot, but it doesn't assign smaller and larger to 
+ * nullptr each time
+*/
+void newLlpivotHelper(Node *& head, Node *&smaller, Node *&larger, int pivot);
 
 /**
  * Given a linked list pointed to by head, removes (filters out) nodes
