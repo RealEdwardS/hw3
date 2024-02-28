@@ -4,9 +4,6 @@
 #include <stdexcept>
 #include <vector> 
 
-// Test
-#include <iostream>
-
 // Swap function
 #include <utility>
 
