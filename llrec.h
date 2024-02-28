@@ -27,6 +27,10 @@ struct Node
  * in the smaller and larger lists but simply moving Nodes out of
  * the input list and into the two other lists.
  * 
+ * NOTE: Note: smaller and larger may be garbage when called 
+ * (i.e. you can NOT assume they are NULL upon entry). 
+ * Also you should not delete or new nodes, but just change the pointers to form the two other lists.
+ * 
  * ==============================================================
  * MUST RUN IN O(n) where n is the number of nodes in the input list
  * ==============================================================
@@ -48,6 +52,12 @@ struct Node
  *
  */
 void llpivot(Node *&head, Node *&smaller, Node *&larger, int pivot);
+
+/**
+ * Define a helper function for llpivot that finds the last node of smaller & larger 
+ * Return that node and let node->next serve as a header. 
+*/
+Node*& llpivotHelper(Node *&list);
 
 /**
  * Given a linked list pointed to by head, removes (filters out) nodes
@@ -83,7 +93,32 @@ Node* llfilter(Node* head, Comp pred)
     //*********************************************
     // Provide your implementation below
     //*********************************************
+    // If list is empty
+    if (head == nullptr){
+        return head; 
+    }
 
+    if (pred(head->val) == false){
+        head->next = llfilter(head->next, pred);
+        return head;
+
+    }
+
+    else if (pred(head->val) == true){
+        // new pointer to unwanted node
+        Node* unwantedNode = head;
+
+        // Shift head pointer to next node
+        head = head->next;
+
+        // Delete the undesirable node
+        delete unwantedNode;
+
+        // Filter list with new head
+        head = llfilter(head, pred); 
+    }
+
+    return head;
 
 }
 
