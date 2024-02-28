@@ -2,6 +2,13 @@
 #define HEAP_H
 #include <functional>
 #include <stdexcept>
+#include <vector> 
+
+// Test
+#include <iostream>
+
+// Swap function
+#include <utility>
 
 template <typename T, typename PComparator = std::less<T> >
 class Heap
@@ -59,16 +66,83 @@ public:
    */
   size_t size() const;
 
+  void trickleUp(const T& item, int index); 
+  void trickleDown(const T& item, int index); 
+  void printList(); 
+
 private:
-  /// Add whatever helper functions and data members you need below
+  // Add whatever helper functions and data members you need below
+  std::vector<T> container; 
 
+  // Type of tree
+  int ary; 
 
-
-
+  // The comparator for comparison
+  PComparator comparator;
 };
 
 // Add implementation of member functions here
 
+// Ctor
+template <typename T, typename PComparator>
+Heap<T, PComparator>::Heap(int m, PComparator c) : ary(m), comparator(c)
+{
+}
+
+// Dtor
+template <typename T, typename PComparator>
+Heap<T, PComparator>::~Heap(){
+}
+
+// Reminder:
+// Default, establish a min heap
+// A min heap is where a parent node is always smaller than child node
+
+// NOTE: Replace 2 with ary
+// Parent(i) = (i+1)/2
+// Left child(i) = 2i + 1
+// Right child(i) = 2i + 2
+
+template <typename T, typename PComparator>
+void Heap<T, PComparator>::push(const T& item){
+  // Add new item to bottom of tree via pushback
+  this->container.push_back(item);
+
+  // Get index of item
+  int index = container.size() - 1; 
+
+  // Trickle up recursively
+  trickleUp(item, index);
+}
+
+template <typename T, typename PComparator>
+void Heap<T, PComparator>::trickleUp(const T& item, int index){
+  // If the index is at 0, i.e. at the very top
+  if (index == 0){
+    return; 
+  }
+
+  // If parent node exists (parent index is within the length of container)
+  // and parent node is greater than current (child) node, swap 
+  if ((index-1)/(this->ary) >= 0){
+
+    // Reference to currNode
+    T& currNode = this->container.at(index); 
+
+    // Reference to parentNode
+    T& parentNode = this->container.at((index-1)/(this->ary));
+
+    // Compare
+    if ((this->comparator(currNode, parentNode))){
+
+      // If comparison passes, swap
+      std::swap(currNode, parentNode); 
+
+      // Call trickle up with value of current node at the parentNode's index
+      trickleUp(parentNode, (index-1)/(this->ary)); 
+    }
+  }
+}
 
 // We will start top() for you to handle the case of 
 // calling top on an empty heap
@@ -81,14 +155,12 @@ T const & Heap<T,PComparator>::top() const
     // ================================
     // throw the appropriate exception
     // ================================
-
+    throw std::underflow_error("Empty heap");
 
   }
   // If we get here we know the heap has at least 1 item
   // Add code to return the top element
-
-
-
+  return this->container.front();
 }
 
 
@@ -101,15 +173,119 @@ void Heap<T,PComparator>::pop()
     // ================================
     // throw the appropriate exception
     // ================================
-
-
+    throw std::underflow_error("Empty heap");
   }
 
+  // Plan of action:
+  // Swap last item in vector w/ top and then pop back
+  // Then recursively sort it
 
+  // If there is only one item in the heap
+  if (this->container.size() <= 1){
+    this->container.pop_back(); 
+    return; 
+  }
 
+  // Get the last item:
+  // T lastItem = this->container.at(container.size()-1); 
+
+  // Swap the last item with the top item, popback, and then trickle down
+  std::swap(this->container.at(0), this->container.at(container.size()-1));
+  this->container.pop_back(); 
+
+  trickleDown(this->container.at(0), 0);
+}
+
+// NOTE: Replace 2 with ary
+// Parent(i) = (i+1)/2
+// Left child(i) = 2i + 1
+// Right child(i) = 2i + 2
+
+template <typename T, typename PComparator>
+void Heap<T, PComparator>::trickleDown(const T& item, int index){
+
+  // If left child exists. NOTE: Right child cannot exist if left doesn't
+  if ( ((index * this->ary) + 1) < this->container.size()){
+    // IF LEFT CHILD EXISTS, compare it with left child
+    T& currItem = this->container.at(index); 
+    T& leftChild = this->container.at((index * this->ary) + 1);
+
+    // If the comparison fails (opposite that of the trickleUp comparison)
+    if (this->comparator(currItem, leftChild) == false){
+      // Swap these 2 values
+      std::swap(currItem, leftChild); 
+
+      // Call trickle down on value of current node at the leftChild's index
+      trickleDown(leftChild, ((index * this->ary) + 1));
+    }
+
+    // If the comparison passes (LEFT CHILD FAILS), check the right child's existance
+    if ( ((index * this->ary) + 2) < this->container.size()){
+      // IF RIGHT CHILD EXISTS, compare it with right child
+      T& rightChild = this->container.at((index * this->ary) + 2); 
+      
+      // If the comparison fails (opposite that of the trickleUp comparison)
+      if (comparator(currItem, rightChild) == false){
+        // Swap these 2 values
+        std::swap(currItem, rightChild);
+
+        // Call trickle down on value of current node at the rightChild's index
+        trickleDown(rightChild, ((index * this->ary) + 2));
+      }
+    }
+  }
+
+}
+
+template <typename T, typename PComparator>
+bool Heap<T, PComparator>::empty() const{
+  if (this->container.size() == 0){
+    return true;
+  }
+
+  return false;
+}
+
+template <typename T, typename PComparator>
+size_t Heap<T, PComparator>::size() const{
+  return this->container.size(); 
+}
+
+template <typename T, typename PComparator>
+void Heap<T, PComparator>::printList(){
+  for (int i = 0; i < this->container.size(); ++i){
+    std::cout << this->container.at(i) << " "; 
+  }
 }
 
 
 
 #endif
 
+/*
+  // If left child exists
+  if ((this->ary) * index + 1 < this->container.size()){
+    T& currNode = this->container.at(index); 
+    T& leftChild = this->container.at((this->ary) * index + 1); 
+
+    // If currNode > leftChild, swap
+    if (this->comparator(currNode, leftChild) == false){
+      std::swap(currNode, leftChild); 
+      trickleDown(leftChild, (this->ary) * index + 1);
+    }
+
+    // If currNode < leftChild, then check right child
+    else if (this->comparator(currNode, leftChild) == true){
+      // If right child exists
+      if ((this->ary) * index + 2 < this->container.size()){
+        T& rightChild = this->container.at((this->ary) * index + 2);
+
+         // If currNode > rightChild, swap
+        if (this->comparator(currNode, rightChild) == false){
+          std::swap(currNode, leftChild); 
+          trickleDown(rightChild, (this->ary) * index + 2); 
+        }
+      }
+    }
+  }
+*/
